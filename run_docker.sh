@@ -24,8 +24,6 @@ do
   docker_devices+="--device=$i "
 done
 
-docker tag 6b50dbe1e5eb ${imagename}:${tagname}
-
 docker run \
     -it \
     --rm \

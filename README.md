@@ -26,7 +26,7 @@ s
 #### Base Instructions
 
 1. Contact Xelera at <info@xelera.io> and request access to Xelera Random Forest inference engine docker image
-2. Decompress and load (``docker load``) the provided docker image
+2. Load (``docker load < Xl_rf_inference.tar.gz``) the provided compressed docker image
 3. Place your H2O DriverlessAI license file in ```license/license.sig``` (it is not needed for the deployment without H2O DriverlessAI. You can get an evaluation version [here](https://www.h2o.ai/try-driverless-ai/))
 4. Start the container using the provided run script: ```./run_docker.sh```. Note that this forwards TCP port 12345 from the docker container to the host machine. This port is required by DriverlessAI.
 5. For each sudo command inside the container, use ```dai``` as password
