@@ -9,11 +9,11 @@ Xelera Random Forest inference engine provides FPGA-enabled real-time deployment
 
 ## Supported Acceleration Platforms
 
-|            Board            |           Driver          |     Shell / Package       |
-| :-------------------------: |:-------------------------: |:-------------------------: |
-|   [Xilinx Alveo U50](https://www.xilinx.com/products/boards-and-kits/alveo/u50.html)  | xrt_201920.2.3.1301 | xilinx-u50-xdma-201920.1  |
-|   [Xilinx Alveo U200](https://www.xilinx.com/products/boards-and-kits/alveo/u200.html) | xrt_201920.2.3.1301 | xilinx-u200-xdma-201830.2 |
-|   [Xilinx Alveo U250](https://www.xilinx.com/products/boards-and-kits/alveo/u250.html) | xrt_201920.2.3.1301 | xilinx-u250-xdma-201830.2 |
+|            Board            |           Driver          |     Shell        |  Note        |
+| :-------------------------: |:-------------------------: |:-------------------------: |:-------------------------: |
+|   [Xilinx Alveo U50](https://www.xilinx.com/products/boards-and-kits/alveo/u50.html)  | xrt_201920.2.3.1301 | xilinx-u50-xdma-201920.1  | available upon request |
+|   [Xilinx Alveo U200](https://www.xilinx.com/products/boards-and-kits/alveo/u200.html) | xrt_201920.2.3.1301 | xilinx-u200-xdma-201830.2 | available upon request |
+|   [Xilinx Alveo U250](https://www.xilinx.com/products/boards-and-kits/alveo/u250.html) | xrt_201920.2.3.1301 | xilinx-u250-xdma-201830.2 | provided with the docker image |
 
 ## Deployment modes
 
@@ -22,22 +22,24 @@ Xelera Random Forest inference engine provides FPGA-enabled real-time deployment
 - **H2O DriverlessAI deployment:** standalone scoring pipeline (Python) for production with Xelera Random Forest BYOR model
 
 The instructions for each run configuration are given below.
-
+s
 #### Base Instructions
 
-1. Contact Xelera at <info@xelera.io> and request access to Xelera Random Forest inference engine
-1. Untar the provided package and ``docker load`` the provided image
-2. Place your H2O DriverlessAI license file in ```license/license.sig``` (it is not needed for the deployment without H2O DriverlessAI. You can get an evaluation version [here](https://www.h2o.ai/try-driverless-ai/))
-3. Run the image using the provided run script: ```./run_docker.sh```. Note that this forwards TCP port 12345 from the docker container to the host machine. This port is required by DriverlessAI.
-4. For each sudo command inside the container, use ```dai``` as password
-5. Follow the instructions for each run configuration as following.
+1. Contact Xelera at <info@xelera.io> and request access to Xelera Random Forest inference engine docker image
+2. Decompress and load (``docker load``) the provided docker image
+3. Place your H2O DriverlessAI license file in ```license/license.sig``` (it is not needed for the deployment without H2O DriverlessAI. You can get an evaluation version [here](https://www.h2o.ai/try-driverless-ai/))
+4. Start the container using the provided run script: ```./run_docker.sh```. Note that this forwards TCP port 12345 from the docker container to the host machine. This port is required by DriverlessAI.
+5. For each sudo command inside the container, use ```dai``` as password
 
 #### Run Standalone
 1. Start the provided docker container. You will be logged in as user ```dai``` in the ```/app``` directory.
-2. Execute ```sudo bash run_benchmarks.sh```
+2. Execute ```sudo bash run_standalone_benchmark.sh```
 3. It will take some time, since the Random Forest models with large tree amounts have to be trained first.
 4. The inference results will be put into the file ```results.txt```
-5. The trained models will be also exported in ``.pkl`` format. They can be reloaded for  inference testing, thus avoiding the model re-training.
+5. The trained models will also be exported in ``.pkl`` format. They can be reloaded for inference only tests. Make the following changes to `run_Xl_benchmark_single.py` to enable only inference:
+    - `enable_training_CPU = False`
+    - `enable_inference_CPU = True`
+    - `enable_inference_FPGA = True`   
 
 #### Run H2O DriverlessAI tuning
 1. Inside the container, execute ```sudo bash init_h2o.sh```. This starts the H2O DriverlessAI backend
@@ -67,12 +69,12 @@ The instructions for each run configuration are given below.
 
 
 #### Run H2O DriverlessAI deployment
-0. As a requirement for this run, you must have completed the experiment in H2O DiverlessAI and downloaded the 'Python Scoring Pipeline'
-1. Extract the downloaded .zip file from the previous step into the directory of the docker container. If not named ```scoring-pipeline```, rename the directory to that name. This is required to mount the directory correctly. Copy the ```scoring-pipeline``` directory into the base directory of the docker container.
-2. Re-start the docker container using ```./run_docker.sh``` . This is required in order to mount the scoring-pipeline directory into the container.
+Reference: [Driverless AI Documentation on Python Scoring Pipeline](http://docs.h2o.ai/driverless-ai/latest-stable/docs/userguide/scoring-standalone-python.html#running-the-python-scoring-pipeline-alternative-method)
+1. As a requirement for this run, you must have completed the H2O DriverlessAI tuning and downloaded the 'Python Scoring Pipeline'
+2. Extract the downloaded .zip file from the previous step into the directory of the docker container. If not named ```scoring-pipeline```, rename the directory to that name. This is required to mount the directory correctly. Copy the ```scoring-pipeline``` directory into the base directory of the docker container.
 3. Inside the container (/app directory), navigate to the scoring-pipeline directory using ```cd scoring-pipeline```
 4. Run the deployment pipeline example (provided by H2O) using ```sudo ./run_example.sh```
-5. The script will install multiple dependencies in a virtual environment. Ignore any error messages (Note that this is provided by H2O and the default behaviour. Compare the [Driverless AI Documentation on Python Scoring Pipeline](http://docs.h2o.ai/driverless-ai/latest-stable/docs/userguide/scoring-standalone-python.html#running-the-python-scoring-pipeline-alternative-method))
+5. The script will install multiple dependencies in a virtual environment. Compare the )
 6. In the end, the script will run the python scoring pipeline. You can see the printed messages from the custom recipe, indicating the runtimes and problem sizes. The amount of trees is determined by the DriverlessAI training; the amount of samples is coded in the example script.
 
 
