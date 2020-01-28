@@ -23,7 +23,7 @@ Xelera Random Forest inference engine provides FPGA-enabled real-time deployment
 
 The instructions for each run configuration are given below.
 
-##### Base Instructions
+#### Base Instructions
 
 1. Contact Xelera at <info@xelera.io> and request access to Xelera Random Forest inference engine
 1. Untar the provided package and ``docker load`` the provided image
@@ -32,14 +32,14 @@ The instructions for each run configuration are given below.
 4. For each sudo command inside the container, use ```dai``` as password
 5. Follow the instructions for each run configuration as following.
 
-##### Run Standalone
+#### Run Standalone
 1. Start the provided docker container. You will be logged in as user ```dai``` in the ```/app``` directory.
 2. Execute ```sudo bash run_benchmarks.sh```
 3. It will take some time, since the Random Forest models with large tree amounts have to be trained first.
 4. The inference results will be put into the file ```results.txt```
 5. The trained models will be also exported in ``.pkl`` format. They can be reloaded for  inference testing, thus avoiding the model re-training.
 
-##### Run H2O DriverlessAI tuning
+#### Run H2O DriverlessAI tuning
 1. Inside the container, execute ```sudo bash init_h2o.sh```. This starts the H2O DriverlessAI backend
 2. In the local browser, navigate to ```server:12345``` using the address bar. ```server``` is the name or IP address of the host machine running the docker container.
 3. Log in using user: ```h2oai```, password: ```h2oai```
@@ -66,7 +66,7 @@ The instructions for each run configuration are given below.
 ![Experiment Setups](images/finished_experiment.png)
 
 
-##### Run H2O DriverlessAI deployment
+#### Run H2O DriverlessAI deployment
 0. As a requirement for this run, you must have completed the experiment in H2O DiverlessAI and downloaded the 'Python Scoring Pipeline'
 1. Extract the downloaded .zip file from the previous step into the directory of the docker container. If not named ```scoring-pipeline```, rename the directory to that name. This is required to mount the directory correctly. Copy the ```scoring-pipeline``` directory into the base directory of the docker container.
 2. Re-start the docker container using ```./run_docker.sh``` . This is required in order to mount the scoring-pipeline directory into the container.
@@ -78,7 +78,7 @@ The instructions for each run configuration are given below.
 
 ## Standalone Benchmark results
 
-##### Hardware Setup
+#### Hardware Setup
 
 - Server Dell PowerEdge R740
     - CPU: Intel(R) Xeon(R) Gold 5118 (32 cores) @ 2.30GHz
@@ -86,7 +86,7 @@ The instructions for each run configuration are given below.
 - Accelerator platform:
     - Xilinx Alveo U250
 
-##### Problem Setup
+#### Problem Setup
 - Training:
     - CPU (Scikit)
 - Inference:
@@ -99,14 +99,14 @@ The instructions for each run configuration are given below.
 - Forest size: 100, 1000, 10000, 100000 trees
 - Samples batch size: 1, 10, 100, 1000, 10000, 100000 samples
 
-##### Goal
+#### Goal
 Measure RF inference Classifier end-to-end (python application) latency
 
-##### results
+#### Results
 
 *CPU-based: Intel Xeon 5118 (32 cores) end-to-end latency [s]*
 
-| sample batch size \ Number of trees |  100 | 1000 | 10000 | 100000|
+| Sample batch size \ Number of trees |  100 | 1000 | 10000 | 100000|
 | :---------------------------------: | :--: | :--: | :---: | :---: |
 |**1**      | 0.113754 | 0.558969 | 5.682151 | 60.4001916
 |**10**     | 0.112719 | 0.615108 | 5.674495 | 65.8061304
@@ -119,7 +119,7 @@ Measure RF inference Classifier end-to-end (python application) latency
 
 *FPGA-based: Xilinx Alveo U250 end-to-end latency [s]*
 
-| sample batch size \ Number of trees |  100 | 1000 | 10000 | 100000|
+| Sample batch size \ Number of trees |  100 | 1000 | 10000 | 100000|
 | :---------------------------------: | :--: | :--: | :---: | :---: |
 |**1**      | 0.000523 | 0.000575 | 0.001169 | 0.003734 |
 |**10**     | 0.000615 | 0.000583 | 0.001381 | 0.004252 |
