@@ -4,7 +4,7 @@ import time
 
 num_trees = [10**2, 10**3, 10**4, 10**5]
 num_samples = [10**0, 10**1, 10**2, 10**3, 10**4, 10**5]
-modes = [0, 1]
+modes = [0] #0 for Classifier, 1 for Regressor
 
 
 start_time = time.clock()
