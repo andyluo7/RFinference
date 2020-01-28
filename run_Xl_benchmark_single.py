@@ -35,13 +35,6 @@ enable_training_CPU = True
 enable_inference_CPU = True
 enable_inference_FPGA = True
 
-# training_only = False #only run model train and no inference if True. It can be used if we have "dump_pklfile = True"
-# inference_only = False #only
-#
-# fpga_only = False
-
-dump_pklfile = False
-
 
 bitstreamName = "/app/Xl_rf_inference.xclbin"
 modelDirOffset = ""
@@ -80,8 +73,6 @@ if (5 < len(sys.argv)):
 
 
 #prepare filename according to parameters
-
-
 predictionType = "classification"
 if (1 == classifierOrRegressor):
     predictionType = "regression"
@@ -157,9 +148,10 @@ if (enable_training_CPU):
     #save model to file
     pickle.dump(clf, open(filename, 'wb'))
 
-if ((!enable_inference_CPU) and (!enable_inference_FPGA)):
+if ((not enable_inference_CPU) and (not enable_inference_FPGA)):
     exit()
 
+clf = pickle.load(open(filename, 'rb'))
 
 tree_in_forest = clf.estimators_[0]
 value = tree_in_forest.tree_.value
@@ -252,7 +244,6 @@ if (enable_inference_CPU):
 if (enable_inference_CPU):
     HW_errors = abs(HW_predictions - test_labels)
     print('HW vs Gold: Mean Absolute Error:', round(np.mean(HW_errors), 2), 'degrees.')
-if not fpga_only:
 
 if (num_classes != 1):
     if (enable_inference_FPGA and enable_inference_CPU):

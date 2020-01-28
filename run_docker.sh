@@ -24,6 +24,7 @@ do
   docker_devices+="--device=$i "
 done
 
+docker tag 6b50dbe1e5eb ${imagename}:${tagname}
 
 docker run \
     -it \
@@ -32,6 +33,9 @@ docker run \
     -p 12345:12345 \
     -v $HERE/scoring-pipeline/:/app/scoring-pipeline \
     -v $HERE/license/:/opt/h2oai/dai/home/.driverlessai/ \
+    -v $HERE/run_standalone_benchmark.py:/app/run_standalone_benchmark.py \
+    -v $HERE/run_standalone_benchmark.sh:/app/run_standalone_benchmark.sh \
+    -v $HERE/run_Xl_benchmark_single.py:/app/run_Xl_benchmark_single.py \
     $docker_devices \
     --name xelera-${imagename} \
     ${imagename}:${tagname} \
